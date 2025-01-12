@@ -4,8 +4,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css'; // importa anche icon-bootstr
 
 const Myfooter = () => {
   return (
-    <footer>
-      <Container className="mt-5">
+    <footer className=" bg-black text-secondary">
+      <Container className="mt-5 ">
         <Row className="justify-content-center">
           <Col xs={12} md={6}>
             <Row>

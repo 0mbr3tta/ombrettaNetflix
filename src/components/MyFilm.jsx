@@ -33,7 +33,7 @@ class MyFilm extends Component {
   render() {
     return (
       <>
-        {this.state.search.map((film, i) => {
+        {this.state.ricerca.map((film, i) => {
           return (
             <Col key={i} className="px-1 ">
               <img
