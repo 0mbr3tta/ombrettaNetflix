@@ -1,65 +1,52 @@
 import { Component } from "react";
 import { Col } from "react-bootstrap";
-
-const BASE_URL = 'https://www.omdbapi.com/';
-const API_KEY = 'f73288cd';
+const URL = 'https://www.omdbapi.com/?i=tt3896198&apikey=f73288cd&s=hunger%20games&type=movie' ;
 
 class MyFilm extends Component {
   state = {
     ricerca: [],
-    error: null, // Stato per gestire eventuali errori
   };
 
-  fetchMovies = async () => {
-    try {
-      const FilmKey = this.props.FilmKey;
-      const url = new URL(BASE_URL);
-      url.searchParams.append("apikey", API_KEY);
-      url.searchParams.append("s", FilmKey);
-      url.searchParams.append("type", "movie");
-
-      const resp = await fetch(url);
-      if (resp.ok) {
-        const data = await resp.json();
-        if (data.Search) {
-          const movies = data.Search.slice(0, 6);
-          this.setState({ ricerca: movies });
-          console.log("Risultati ottenuti: ", movies);
+  fetchMovies = () => {
+    const FilmKey = this.props.FilmKey;
+    fetch(URL + FilmKey)
+      .then((resp) => {
+        if (resp.ok) {
+          return resp.json();
         } else {
-          this.setState({ error: "Nessun film trovato per questa ricerca." });
+          throw new Error("errore nella chiamata ");
         }
-      } else {
-        throw new Error("Errore nella risposta dal server.");
-      }
-    } catch (e) {
-      console.error("Errore nella fetch: ", e);
-      this.setState({ error: "Impossibile recuperare i dati." });
-    }
+      })
+      .then((data) => {
+        const Movies = data.Search.slice(0, 6);
+        this.setState({ ricerca: Movies });
+        console.log(" risposta json dal server ", Movies);
+      })
+      .catch((e) => {
+        console.log("errore", e);
+      });
   };
-
   componentDidMount() {
     this.fetchMovies();
   }
 
   render() {
-    const { ricerca, error } = this.state;
-
     return (
       <>
-        {error && <p className="text-danger">{error}</p>}
-        {ricerca.map((film, i) => (
-          <Col key={i} className="px-1">
-            <img
-              className="img-fluid"
-              src={film.Poster}
-              alt={film.Title}
-              style={{ width: "100%", height: "95%" }}
-            />
-          </Col>
-        ))}
+        {this.state.search.map((film, i) => {
+          return (
+            <Col key={i} className="px-1 ">
+              <img
+                className="img-fluid "
+                src={film.Poster}
+                alt={film.Title}
+                style={{ width: "100%", height: "95%" }}
+              />
+            </Col>
+          );
+        })}
       </>
     );
   }
 }
-
 export default MyFilm;
